@@ -30,12 +30,19 @@ def main( create, extract, encrypt, hash_type, decrypt, timestamp, dir, dest ) :
     print( create )
     print(hash_type)
 
-    if create :
-        make_tarfile( dest, dir )
+    if create and not extract:
+        make_tarfile( dir, dest )
+    elif extract and not create :
+        extract_tarfile( dir, dest )
 
-def make_tarfile( output_filename, source_dir ):
+def make_tarfile( source_dir, output_filename ):
     with tarfile.open(output_filename, "w:gz") as tar:
         tar.add(source_dir, arcname=os.path.basename(source_dir))
+
+def extract_tarfile( dir, dest ) :
+    tar = tarfile.open( dir )
+    tar.extractall( path=dest )
+    tar.close()
 
 
 #############################################
