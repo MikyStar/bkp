@@ -5,16 +5,20 @@
 import click
 import tarfile
 import os.path
+import os
+
+#############################################
+
+hide_prefix = '.$-'
 
 #############################################
 
 """
-- Make bkp
-- Extract bkp
 - Encrypt
 - Decrypt
 - Add timestamp
 - Choose format of timestamp
+- Make temporary names to 'hide' the steps 
 """
 
 @click.command()
@@ -30,10 +34,19 @@ def main( create, extract, encrypt, hash_type, decrypt, timestamp, dir, dest ) :
     print( create )
     print(hash_type)
 
+    mv( dir, hide_prefix + dest )
+
+    #if encrypt and not decrypt:
+    #    encrypt_dir( dir )
+
     if create and not extract:
         make_tarfile( dir, dest )
     elif extract and not create :
         extract_tarfile( dir, dest )
+
+    mv( hide_prefix + dest, dest )
+
+#############################################
 
 def make_tarfile( source_dir, output_filename ):
     with tarfile.open(output_filename, "w:gz") as tar:
@@ -44,6 +57,8 @@ def extract_tarfile( dir, dest ) :
     tar.extractall( path=dest )
     tar.close()
 
+def mv( dir, dest ) :
+    os.rename(dir, dest)
 
 #############################################
 
