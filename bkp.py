@@ -9,10 +9,6 @@ import shutil
 
 #############################################
 
-hide_prefix = '.$-'
-
-#############################################
-
 """
 - Encrypt
 - Decrypt
@@ -31,23 +27,26 @@ hide_prefix = '.$-'
 @click.argument('path', type=click.Path(exists=True))
 @click.argument('dest', type=click.Path(exists=False ))
 def main( create, extract, encrypt, hash_type, decrypt, timestamp, path, dest ) :
-    hidden_dest = hide_prefix + dest
-
-    click.echo( click.style( 'Copying files ...', fg='cyan' ))
-    cp( path, hidden_dest )
 
     #if encrypt and not decrypt:
     #    encrypt_dir( dir )
 
+    # Archiving
     if create and not extract:
-        make_tarfile( hidden_dest, hidden_dest + '.tgz')
+        click.echo( click.style( 'Copying files ...', fg='cyan' ))
+        cp( path, dest )
 
-        rm( hidden_dest )
-        mv( hidden_dest + '.tgz', dest )
+        make_tarfile( dest, dest + '.tgz')
 
-        click.echo( click.style( 'Done.', fg='green' ))
+        rm( dest )
+        mv( dest + '.tgz', dest )
+
+        click.echo( click.style( 'Archive created.', fg='green' ))
     elif extract and not create :
-        extract_tarfile( hidden_dest, hidden_dest )
+        extract_tarfile( path, dest )
+        
+        click.echo( click.style( 'Extraction complete.', fg='green' ))
+    
 
 
 #############################################
@@ -58,7 +57,7 @@ def make_tarfile( source_dir, output_filename ):
 
 def extract_tarfile( path, dest ) :
     tar = tarfile.open( path )
-    tar.extractall( path=path )
+    tar.extractall( path=dest )
     tar.close()
 
 def mv( path, dest ) :
