@@ -48,15 +48,21 @@ def main( create, extract, encrypt, hash_type, decrypt, timestamp, path, dest ) 
         if encrypt and not decrypt:
             encrypt_aes( dest, dest + '.enc' )
 
-            #rm( dest )
-            #mv( dest + '.enc', dest )
+            rm( dest )
+            mv( dest + '.enc', dest )
             
             click.echo( click.style( 'Archive encrypted.', fg='green' ))
     elif extract and not create :
-        extract_tarfile( path, dest )
-        
+        input = path
+
+        if decrypt and not encrypt:
+            input = dest + '.dec'
+            decrypt_aes( path, input )
+            
+            click.echo( click.style( 'Archive decrypted.', fg='green' ))
+
+        extract_tarfile( input, dest )
         click.echo( click.style( 'Extraction complete.', fg='green' ))
-    
 
 
 #############################################
@@ -71,9 +77,11 @@ def extract_tarfile( path, dest ) :
     tar.close()
 
 def encrypt_aes( path, dest ) :
-    print('yay')
     if os.path.isfile( path ) :
         pyAesCrypt.encryptFile( path, dest, password, bufferSize )
+
+def decrypt_aes( path, dest ) :
+    pyAesCrypt.decryptFile( path, dest, password, bufferSize )
 
 
 def mv( path, dest ) :
