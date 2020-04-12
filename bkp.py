@@ -6,6 +6,12 @@ import click
 import tarfile
 import os.path
 import shutil
+import pyAesCrypt
+
+#############################################
+
+bufferSize = 64 * 1024
+password = "123"
 
 #############################################
 
@@ -28,10 +34,6 @@ import shutil
 @click.argument('dest', type=click.Path(exists=False ))
 def main( create, extract, encrypt, hash_type, decrypt, timestamp, path, dest ) :
 
-    #if encrypt and not decrypt:
-    #    encrypt_dir( dir )
-
-    # Archiving
     if create and not extract:
         click.echo( click.style( 'Copying files ...', fg='cyan' ))
         cp( path, dest )
@@ -42,6 +44,14 @@ def main( create, extract, encrypt, hash_type, decrypt, timestamp, path, dest ) 
         mv( dest + '.tgz', dest )
 
         click.echo( click.style( 'Archive created.', fg='green' ))
+
+        if encrypt and not decrypt:
+            encrypt_aes( dest, dest + '.enc' )
+
+            #rm( dest )
+            #mv( dest + '.enc', dest )
+            
+            click.echo( click.style( 'Archive encrypted.', fg='green' ))
     elif extract and not create :
         extract_tarfile( path, dest )
         
@@ -59,6 +69,12 @@ def extract_tarfile( path, dest ) :
     tar = tarfile.open( path )
     tar.extractall( path=dest )
     tar.close()
+
+def encrypt_aes( path, dest ) :
+    print('yay')
+    if os.path.isfile( path ) :
+        pyAesCrypt.encryptFile( path, dest, password, bufferSize )
+
 
 def mv( path, dest ) :
     os.rename(path, dest)
