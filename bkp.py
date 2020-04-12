@@ -7,11 +7,11 @@ import tarfile
 import os.path
 import shutil
 import pyAesCrypt
+from getpass import getpass
 
 #############################################
 
 bufferSize = 64 * 1024
-password = "123"
 
 #############################################
 
@@ -53,16 +53,16 @@ def main( create, extract, encrypt, hash_type, decrypt, timestamp, path, dest ) 
             
             click.echo( click.style( 'Archive encrypted.', fg='green' ))
     elif extract and not create :
-        input = path
-
         if decrypt and not encrypt:
-            input = dest + '.dec'
-            decrypt_aes( path, input )
-            
+            decrypt_aes( path, dest + '.dec' )
             click.echo( click.style( 'Archive decrypted.', fg='green' ))
 
-        extract_tarfile( input, dest )
-        click.echo( click.style( 'Extraction complete.', fg='green' ))
+            extract_tarfile( dest + '.dec', dest )
+            rm( dest + '.dec' )
+            click.echo( click.style( 'Extraction complete.', fg='green' ))
+        else :
+            extract_tarfile( input, dest )
+            click.echo( click.style( 'Extraction complete.', fg='green' ))
 
 
 #############################################
@@ -78,9 +78,11 @@ def extract_tarfile( path, dest ) :
 
 def encrypt_aes( path, dest ) :
     if os.path.isfile( path ) :
+        password = prompt_pswd(confirmation=True)
         pyAesCrypt.encryptFile( path, dest, password, bufferSize )
 
 def decrypt_aes( path, dest ) :
+    password = prompt_pswd()
     pyAesCrypt.decryptFile( path, dest, password, bufferSize )
 
 
@@ -98,6 +100,20 @@ def rm( path ) :
         shutil.rmtree( path )
     elif os.path.isfile( path ) :
         os.remove( path )
+
+def prompt_pswd( confirmation=False) :
+    entry1 = getpass()
+
+    if confirmation == False :
+        return entry1
+    else :
+        entry2 = getpass('Confirmation: ')
+
+        if entry1 != entry2 :
+            click.echo( click.style( 'Not matching', fg='red' ))
+            quit(-1)
+        else :
+            return entry1
 
 #############################################
 
