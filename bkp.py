@@ -22,9 +22,14 @@ bufferSize = 64 * 1024
 @click.option( '-e', '--encrypt', is_flag=True )
 @click.option( '-d', '--decrypt', is_flag=True )
 @click.option( '-t', '--timestamp', is_flag=True )
+@click.option( '--extension/--no-extension', default=True )
 @click.argument('path', type=click.Path(exists=True))
-@click.argument('dest', type=click.Path(exists=False ))
-def main( create, extract, encrypt, decrypt, timestamp, path, dest ) :
+@click.argument('dest', default='' )
+def main( create, extract, encrypt, decrypt, timestamp, extension, path, dest ) :
+    print(dest)
+    #if extension  :
+        #mv( dest, dest + '.bkp' )
+        #click.echo( click.style( 'Extension added.', fg='green' )) 
 
     if create and not extract:
         click.echo( click.style( 'Copying files ...', fg='cyan' ))
@@ -59,6 +64,8 @@ def main( create, extract, encrypt, decrypt, timestamp, path, dest ) :
     if timestamp == True :
         mv( dest, dest + '.'+ get_timestamp() )
         click.echo( click.style( 'Timestamp added.', fg='green' ))
+
+    
 
 
 #############################################
