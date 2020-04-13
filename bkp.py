@@ -26,9 +26,15 @@ bufferSize = 64 * 1024
 @click.argument('path', type=click.Path(exists=True))
 @click.argument('dest', default='' )
 def main( create, extract, encrypt, decrypt, timestamp, extension, path, dest ) :
-    print(dest)
-    #if extension  :
-        #mv( dest, dest + '.bkp' )
+
+    if not extension and dest == '' :
+        click.echo( click.style( 'You have to provide a destination if you disable the extension.', fg='red' ))
+        quit()
+    else :
+        dest = dest if dest != '' else path + '.bkp'
+
+    #if extension and dest == '' :
+        #mv( path, dest + '.bkp' )
         #click.echo( click.style( 'Extension added.', fg='green' )) 
 
     if create and not extract:
