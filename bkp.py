@@ -16,19 +16,10 @@ bufferSize = 64 * 1024
 
 #############################################
 
-"""
-- Encrypt
-- Decrypt
-- Add timestamp
-- Choose format of timestamp
-- Make temporary names to 'hide' the steps 
-"""
-
 @click.command()
 @click.option( '-c', '--create', is_flag=True )
 @click.option( '-x', '--extract', is_flag=True )
 @click.option( '-e', '--encrypt', is_flag=True )
-@click.option( '-h', '--hash-type', type=click.Choice(['MD5', 'SHA1'], case_sensitive=False))
 @click.option( '-d', '--decrypt', is_flag=True )
 @click.option( '-t', '--timestamp', is_flag=True )
 @click.argument('path', type=click.Path(exists=True))
@@ -93,7 +84,6 @@ def decrypt_aes( path, dest ) :
 def get_timestamp() :
     now = datetime.now()
     return now.strftime( "%d.%m.%Y.%H.%M.%S")
-
 
 def mv( path, dest ) :
     os.rename(path, dest)
