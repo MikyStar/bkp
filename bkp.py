@@ -24,7 +24,7 @@ bufferSize = 64 * 1024
 @click.option( '-t', '--timestamp', is_flag=True )
 @click.argument('path', type=click.Path(exists=True))
 @click.argument('dest', type=click.Path(exists=False ))
-def main( create, extract, encrypt, hash_type, decrypt, timestamp, path, dest ) :
+def main( create, extract, encrypt, decrypt, timestamp, path, dest ) :
 
     if create and not extract:
         click.echo( click.style( 'Copying files ...', fg='cyan' ))
