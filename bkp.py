@@ -34,8 +34,16 @@ def main( create, extract, encrypt, decrypt, timestamp, extension, path, dest ) 
         click.echo( click.style( 'You have to provide a destination if you disable the extension.', fg='red' ))
         quit()
     else :
+        final_extension = ''
+
+        if timestamp == True :
+            final_extension += '.' + get_timestamp()
+
         if dest == '' :
-            dest = path + '.bkp' if ( create and not extract ) else path + '.full'
+            final_extension += '.bkp' if ( create and not extract ) else '.full'
+            dest = path + final_extension
+        else :
+            dest = dest + final_extension
 
     if create and not extract:
         click.echo( click.style( 'Copying files ...', fg='cyan' ))
@@ -66,10 +74,6 @@ def main( create, extract, encrypt, decrypt, timestamp, extension, path, dest ) 
         else :
             extract_tarfile( input, dest )
             click.echo( click.style( 'Extraction complete.', fg='green' ))
-
-    if timestamp == True :
-        mv( dest, dest + '.'+ get_timestamp() )
-        click.echo( click.style( 'Timestamp added.', fg='green' ))
 
 #############################################
 
