@@ -9,13 +9,13 @@ _A simple command line tool to create Backups_
 `Requires conda`
 
 ```sh
-conda env create -f environment.yml
+conda env create -f env.yml
 chmod u+x bkp.py
 ```
 
 ## Use
 
-````sh
+```sh
 ./bkp.py -ce my_dir # Create an AES-256-CBC targz archive 
 ./bkp.py -xd my_dir.bkp ./here/archive # Decrypt and extract the archive to provided destination
 

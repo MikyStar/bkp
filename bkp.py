@@ -1,4 +1,4 @@
-#!/usr/bin/env conda run -n bkp_custom python
+#!/usr/bin/env conda run -n bkp python
 
 #############################################
 

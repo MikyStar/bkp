@@ -1,0 +1,9 @@
+root = true
+
+[*]
+indent_style = tab
+tab_width = 4
+
+[*.ya?ml]
+indent_style = space
+indent_size = 2
