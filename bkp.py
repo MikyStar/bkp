@@ -32,10 +32,10 @@ def main( create, extract, encrypt, decrypt, timestamp, extension, path, dest ) 
     """
     final_extension = ''
 
-    if timestamp == True :
+    if timestamp:
         final_extension += '.' + get_timestamp()
 
-    if not extension :
+    if extension :
         final_extension += '.bkp' if ( create and not extract ) else '.full'
 
     if dest == '' :
