@@ -8,6 +8,7 @@ import os.path
 import shutil
 import pyAesCrypt
 from getpass import getpass
+from datetime import datetime
 
 #############################################
 
@@ -64,6 +65,10 @@ def main( create, extract, encrypt, hash_type, decrypt, timestamp, path, dest ) 
             extract_tarfile( input, dest )
             click.echo( click.style( 'Extraction complete.', fg='green' ))
 
+    if timestamp == True :
+        mv( dest, dest + '.'+ get_timestamp() )
+        click.echo( click.style( 'Timestamp added.', fg='green' ))
+
 
 #############################################
 
@@ -84,6 +89,10 @@ def encrypt_aes( path, dest ) :
 def decrypt_aes( path, dest ) :
     password = prompt_pswd()
     pyAesCrypt.decryptFile( path, dest, password, bufferSize )
+
+def get_timestamp() :
+    now = datetime.now()
+    return now.strftime( "%d.%m.%Y.%H.%M.%S")
 
 
 def mv( path, dest ) :
