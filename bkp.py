@@ -13,7 +13,7 @@ from datetime import datetime
 
 #############################################
 
-bufferSize = 64 * 1024
+BUFFER_SIZE = 64 * 1024
 
 #############################################
 
@@ -30,20 +30,18 @@ def main( create, extract, encrypt, decrypt, timestamp, extension, path, dest ) 
     """
     DEST if not provided will be same path with '.bkp' for archiving or '.full' for extracting
     """
-    if not extension and dest == '' :
-        click.echo( click.style( 'You have to provide a destination if you disable the extension.', fg='red' ))
-        quit()
+    final_extension = ''
+
+    if timestamp == True :
+        final_extension += '.' + get_timestamp()
+
+    if not extension :
+        final_extension += '.bkp' if ( create and not extract ) else '.full'
+
+    if dest == '' :
+        dest = path + final_extension
     else :
-        final_extension = ''
-
-        if timestamp == True :
-            final_extension += '.' + get_timestamp()
-
-        if dest == '' :
-            final_extension += '.bkp' if ( create and not extract ) else '.full'
-            dest = path + final_extension
-        else :
-            dest = dest + final_extension
+        dest = dest + final_extension
 
     if create and not extract:
         click.echo( click.style( 'Copying files ...', fg='cyan' ))
@@ -61,7 +59,7 @@ def main( create, extract, encrypt, decrypt, timestamp, extension, path, dest ) 
 
             rm( dest )
             mv( dest + '.enc', dest )
-            
+
             click.echo( click.style( 'Archive encrypted.', fg='green' ))
     elif extract and not create :
         if decrypt and not encrypt:
@@ -89,11 +87,11 @@ def extract_tarfile( path, dest ) :
 def encrypt_aes( path, dest ) :
     if os.path.isfile( path ) :
         password = prompt_pswd(confirmation=True)
-        pyAesCrypt.encryptFile( path, dest, password, bufferSize )
+        pyAesCrypt.encryptFile( path, dest, password, BUFFER_SIZE )
 
 def decrypt_aes( path, dest ) :
     password = prompt_pswd()
-    pyAesCrypt.decryptFile( path, dest, password, bufferSize )
+    pyAesCrypt.decryptFile( path, dest, password, BUFFER_SIZE )
 
 def get_timestamp() :
     now = datetime.now()
