@@ -1,10 +1,11 @@
-#!/usr/local/anaconda3/envs/bkp_custom/bin/python3
+#!/usr/bin/env conda run -n bkp_custom python
 
 #############################################
 
 import click
 import tarfile
 import os.path
+import os
 import shutil
 import pyAesCrypt
 from getpass import getpass
@@ -31,7 +32,8 @@ def main( create, extract, encrypt, decrypt, timestamp, extension, path, dest ) 
         click.echo( click.style( 'You have to provide a destination if you disable the extension.', fg='red' ))
         quit()
     else :
-        dest = dest if dest != '' else path + '.bkp'
+        if dest == '' :
+            dest = path + '.bkp' if ( create and not extract ) else path + '.dec'
 
     #if extension and dest == '' :
         #mv( path, dest + '.bkp' )
@@ -70,9 +72,6 @@ def main( create, extract, encrypt, decrypt, timestamp, extension, path, dest ) 
     if timestamp == True :
         mv( dest, dest + '.'+ get_timestamp() )
         click.echo( click.style( 'Timestamp added.', fg='green' ))
-
-    
-
 
 #############################################
 
